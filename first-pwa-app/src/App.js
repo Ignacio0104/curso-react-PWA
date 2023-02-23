@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {withServiceWorkerUpdater,} from '@3m1/service-worker-updater'
+import FormPush from './componentes/FormPush';
 
 
 const App =(props)=> {
@@ -23,7 +24,7 @@ const App =(props)=> {
   return (
     <div className="App">
       <header className="App-header">
-      <h1>Lista de la compra V9</h1>
+      <h1>Lista de la compra</h1>
       {newServiceWorkerDetected && (
       <div style={{backgroundColor: "red"}}>
         <h3>Nueva actualizacion!</h3>
@@ -36,9 +37,9 @@ const App =(props)=> {
       {listaCompras.map((element,index)=>
       (
         <li key={index}>{element}</li>
-      ))}
-        
+      ))}      
       </ul>
+      <FormPush></FormPush>
       </header>
     </div>
   );

@@ -1,6 +1,8 @@
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
+import axios from "axios";
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -17,6 +19,11 @@ const isLocalhost = Boolean(
     // 127.0.0.0/8 are considered localhost for IPv4.
     window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
+
+const vapidKeys = {
+  publicKey:"BNGw9OpgYVjaTcpk7zRgQ9LyGXZPkUXpscz2nHAwiYbEbxXzjBMlM89_Ai-1uxy6Za1Wt97vjDbRxgk6TKhlWMQ",
+  privateKey:"f2G33u7w6AblrRw38IPY_EPSNvWLPuPG9YkpOf47xQk"
+}
 
 export function register(config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
@@ -56,6 +63,17 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+
+      registration.pushManager.getSubscription()//Esto lo agregamos nosotros
+      .then(async sub=> {
+        const pushSubscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: vapidKeys.publicKey
+      })
+      //Se lo enviamos al servidor
+      await axios.post("http://localhost:8000/subscription",pushSubscription)
+    })
+
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
